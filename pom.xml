@@ -18,6 +18,14 @@
 		<jboss-logging.version>3.5.0.Final</jboss-logging.version>
 		<httpclient.version>4.5.14</httpclient.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/andidroid/test</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
