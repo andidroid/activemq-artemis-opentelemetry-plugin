@@ -178,6 +178,11 @@
 			<artifactId>opentelemetry-micrometer-1.5</artifactId>
 			<version>${opentelemetry.version}-alpha</version>
 		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry.instrumentation</groupId>
+			<artifactId>opentelemetry-jmx-metrics</artifactId>
+			<version>${opentelemetry.version}-alpha</version>
+		</dependency>
 
 
 <!-- dependencies for Netty OPENSSL -->
