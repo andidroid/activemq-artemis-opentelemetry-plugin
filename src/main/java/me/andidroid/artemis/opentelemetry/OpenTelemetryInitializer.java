@@ -1,6 +1,7 @@
 package me.andidroid.artemis.opentelemetry;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -43,7 +44,7 @@ public class OpenTelemetryInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final OpenTelemetryInitializer INSTANCE = new OpenTelemetryInitializer();
+    private static OpenTelemetryInitializer INSTANCE = null;
 
     private OpenTelemetrySdk openTelemetry;
 
@@ -54,17 +55,25 @@ public class OpenTelemetryInitializer {
         return INSTANCE;
     }
 
-    public OpenTelemetryInitializer() {
+    public static OpenTelemetryInitializer create(Map<String, String> properties) {
+        INSTANCE = new OpenTelemetryInitializer(properties);
+        return INSTANCE;
+    }
+
+    public OpenTelemetryInitializer(Map<String, String> properties) {
         logger.info("start OpenTelemetryInitializer");
         try
 
         {
-            InputStream input = OpenTelemetryPlugin.class.getClassLoader().getResourceAsStream("tracing.properties");
+            InputStream input = OpenTelemetryPlugin.class.getClassLoader()
+                    .getResourceAsStream("opentelemetry.properties");
             if (input == null) {
                 throw new NullPointerException("Unable to find tracing.properties file");
             }
             Properties prop = new Properties(System.getProperties());
             prop.load(input);
+            prop.putAll(properties);
+            logger.info(prop.toString());
             System.setProperties(prop);
 
             String otelEndpoint = Objects
@@ -72,8 +81,11 @@ public class OpenTelemetryInitializer {
 
             // sdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
 
+            String serviceName = Objects
+                    .toString(prop.getOrDefault("otel.service.name", "activemq-artemis"));
+
             Resource resource = Resource.getDefault()
-                    .merge(Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "test-activemq-artemis")));
+                    .merge(Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName)));
 
             SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
                     .addSpanProcessor(BatchSpanProcessor.builder(OtlpGrpcSpanExporter.builder().build()).build())

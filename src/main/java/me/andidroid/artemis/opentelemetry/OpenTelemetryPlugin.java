@@ -1,6 +1,7 @@
 package me.andidroid.artemis.opentelemetry;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
@@ -15,6 +16,7 @@ import org.apache.activemq.artemis.core.server.ServerConsumer;
 import org.apache.activemq.artemis.core.server.ServerSession;
 import org.apache.activemq.artemis.core.server.plugin.ActiveMQServerPlugin;
 import org.apache.activemq.artemis.core.transaction.Transaction;
+import org.apache.activemq.artemis.core.server.ActiveMQServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +30,25 @@ public class OpenTelemetryPlugin implements ActiveMQServerPlugin {
    private OpenTelemetry openTelemetry;
    private Tracer tracer;// = GlobalOpenTelemetry.getTracer(OpenTelemetryPlugin.class.getName());
 
+   private final AtomicReference<ActiveMQServer> server = new AtomicReference<>();
+
    @Override
    public void init(Map<String, String> properties) {
       logger.info("start OpenTelemetryPlugin");
-      openTelemetry = OpenTelemetryInitializer.getINSTANCE().getOpenTelemetry();
+
+      logger.info(properties.toString());
+      openTelemetry = OpenTelemetryInitializer.create(properties).getOpenTelemetry();
       tracer = openTelemetry.getTracer(OpenTelemetryPlugin.class.getName());
+   }
+
+   @Override
+   public void registered(ActiveMQServer server) {
+      this.server.set(server);
+   }
+
+   @Override
+   public void unregistered(ActiveMQServer server) {
+      this.server.set(null);
    }
 
    @Override
