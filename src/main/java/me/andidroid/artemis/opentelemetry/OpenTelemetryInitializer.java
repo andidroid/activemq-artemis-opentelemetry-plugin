@@ -1,12 +1,19 @@
 package me.andidroid.artemis.opentelemetry;
 
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
-// import io.opentelemetry.api.logs.GlobalLoggerProvider;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
@@ -15,14 +22,6 @@ import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
-// import io.opentelemetry.instrumentation.runtimemetrics.BufferPools;
-// import io.opentelemetry.instrumentation.runtimemetrics.Classes;
-// import io.opentelemetry.instrumentation.runtimemetrics.Cpu;
-// import io.opentelemetry.instrumentation.runtimemetrics.GarbageCollector;
-// import io.opentelemetry.instrumentation.runtimemetrics.MemoryPools;
-// import io.opentelemetry.instrumentation.runtimemetrics.Threads;
-//import io.opentelemetry.exporter.otlp.log.OtlpGrpcLogRecordExporter;
-//import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.logs.LogRecordProcessor;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
@@ -34,13 +33,6 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
-
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 
 public class OpenTelemetryInitializer {
 
@@ -82,8 +74,6 @@ public class OpenTelemetryInitializer {
                                         .toString(prop.getOrDefault("otel.exporter.otlp.endpoint",
                                                         "http://localhost:4317"));
 
-                        // sdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
-
                         String serviceName = Objects
                                         .toString(prop.getOrDefault("otel.service.name", "activemq-artemis"));
 
@@ -91,12 +81,19 @@ public class OpenTelemetryInitializer {
                                         .merge(Resource.create(
                                                         Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName)));
 
+                        /*
+                         * Tracing
+                         */
+
                         SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
                                         .addSpanProcessor(BatchSpanProcessor
                                                         .builder(OtlpGrpcSpanExporter.builder().build()).build())
                                         .setResource(resource)
                                         .build();
 
+                        /*
+                         * Metrics
+                         */
                         SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
                                         .registerMetricReader(
                                                         PeriodicMetricReader.builder(
@@ -104,8 +101,9 @@ public class OpenTelemetryInitializer {
                                                                         .build())
                                         .setResource(resource)
                                         .build();
-                        // OtlpGrpcLogRecordExporter
-
+                        /*
+                         * Logging
+                         */
                         LogRecordExporter logRecordExporter = OtlpGrpcLogRecordExporter.builder()
                                         .setEndpoint(otelEndpoint)
                                         .build();
@@ -129,64 +127,18 @@ public class OpenTelemetryInitializer {
                                         .setPropagators(ContextPropagators
                                                         .create(W3CTraceContextPropagator.getInstance()))
                                         .buildAndRegisterGlobal();
-                        // dont call this, already called internally via buildAndRegisterGlobal()
-                        // GlobalOpenTelemetry.set(sdk);
-
-                        // GlobalLoggerProvider.set(openTelemetry.getSdkLoggerProvider());
 
                 } catch (Throwable t) {
                         t.printStackTrace();
                 }
 
-                try {
-
-                        // GlobalLoggerProvider.set(sdk.getSdkLoggerProvider());
-                        // Resource resource = Resource.getDefault();
-                        // LogRecordExporter logRecordExporter = InMemoryLogRecordExporter.create();
-                        // SdkLoggerProvider sdkLoggerProvider = SdkLoggerProvider.builder()
-                        // .setResource(resource)
-                        // .addLogRecordProcessor(SimpleLogRecordProcessor.create(logRecordExporter))
-                        // .build();
-                        // GlobalLoggerProvider.set(sdkLoggerProvider);
-
-                        // BufferPools.registerObservers(openTelemetry);
-                        // Classes.registerObservers(openTelemetry);
-                        // Cpu.registerObservers(openTelemetry);
-                        // MemoryPools.registerObservers(openTelemetry);
-                        // Threads.registerObservers(openTelemetry);
-                        // GarbageCollector.registerObservers(openTelemetry);
-
-                        RuntimeMetrics runtimeMetrics = RuntimeMetrics.builder(openTelemetry)
-                                        .enableFeature(JfrFeature.BUFFER_METRICS)
-                                        .enableFeature(JfrFeature.CLASS_LOAD_METRICS)
-                                        .enableFeature(JfrFeature.CONTEXT_SWITCH_METRICS)
-                                        .enableFeature(JfrFeature.CPU_COUNT_METRICS)
-                                        .enableFeature(JfrFeature.CPU_UTILIZATION_METRICS)
-                                        .enableFeature(JfrFeature.GC_DURATION_METRICS)
-                                        .enableFeature(JfrFeature.LOCK_METRICS)
-                                        .enableFeature(JfrFeature.MEMORY_ALLOCATION_METRICS)
-                                        .enableFeature(JfrFeature.MEMORY_POOL_METRICS)
-                                        .enableFeature(JfrFeature.NETWORK_IO_METRICS)
-                                        .enableFeature(JfrFeature.THREAD_METRICS)
-                                        .build();
-                        // stop on shutdown
-                        // runtimeMetrics.close();
-
-                        MeterRegistry otelMeterRegistry = OpenTelemetryMeterRegistry.builder(openTelemetry)
-                                        .setPrometheusMode(true)
-                                        .build();
-                        Metrics.addRegistry(otelMeterRegistry);
-
-                } catch (Throwable t) {
-                        t.printStackTrace();
-                }
                 // return sdk;
         }
 
         /**
          * @return the openTelemetry
          */
-        public OpenTelemetrySdk getOpenTelemetry() {
-                return openTelemetry;
+        public OpenTelemetry getOpenTelemetry() {
+                return openTelemetry == null ? GlobalOpenTelemetry.get() : openTelemetry;
         }
 }

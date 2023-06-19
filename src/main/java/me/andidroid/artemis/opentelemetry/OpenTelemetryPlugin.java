@@ -32,6 +32,8 @@ public class OpenTelemetryPlugin implements ActiveMQServerPlugin {
 
    private final AtomicReference<ActiveMQServer> server = new AtomicReference<>();
 
+
+   
    @Override
    public void init(Map<String, String> properties) {
       logger.info("start OpenTelemetryPlugin");

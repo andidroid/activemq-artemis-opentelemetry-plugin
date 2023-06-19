@@ -17,9 +17,14 @@
 package me.andidroid.artemis.opentelemetry;
 
 import java.util.Map;
+
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
+import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
+import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
+
 import org.apache.activemq.artemis.core.server.metrics.ActiveMQMetricsPlugin;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
@@ -41,7 +46,36 @@ public class OpenTelemetryMetricsPlugin implements ActiveMQMetricsPlugin {
 
       try {
          logger.info("start OpenTelemetryMetricsPlugin");
-         openTelemetry = OpenTelemetryInitializer.getINSTANCE().getOpenTelemetry();
+         openTelemetry = GlobalOpenTelemetry.get();// OpenTelemetryInitializer.getINSTANCE().getOpenTelemetry();
+
+         try {
+
+            RuntimeMetrics runtimeMetrics = RuntimeMetrics.builder(openTelemetry)
+                  .enableFeature(JfrFeature.BUFFER_METRICS)
+                  .enableFeature(JfrFeature.CLASS_LOAD_METRICS)
+                  .enableFeature(JfrFeature.CONTEXT_SWITCH_METRICS)
+                  .enableFeature(JfrFeature.CPU_COUNT_METRICS)
+                  .enableFeature(JfrFeature.CPU_UTILIZATION_METRICS)
+                  .enableFeature(JfrFeature.GC_DURATION_METRICS)
+                  .enableFeature(JfrFeature.LOCK_METRICS)
+                  .enableFeature(JfrFeature.MEMORY_ALLOCATION_METRICS)
+                  .enableFeature(JfrFeature.MEMORY_POOL_METRICS)
+                  .enableFeature(JfrFeature.NETWORK_IO_METRICS)
+                  .enableFeature(JfrFeature.THREAD_METRICS)
+                  .build();
+            // stop on shutdown
+            // runtimeMetrics.close();
+
+            // MeterRegistry otelMeterRegistry =
+            // OpenTelemetryMeterRegistry.builder(openTelemetry)
+            // .setPrometheusMode(true)
+            // .build();
+            // Metrics.addRegistry(otelMeterRegistry);
+
+         } catch (Throwable t) {
+            t.printStackTrace();
+         }
+
          otelMeterRegistry = OpenTelemetryMeterRegistry.builder(openTelemetry).setPrometheusMode(true)
                .build();
          // store.put(MeterRegistry.class, otelMeterRegistry);
