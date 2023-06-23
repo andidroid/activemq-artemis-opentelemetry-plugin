@@ -7,7 +7,7 @@ Metrics with Micrometer and ActiveMQMetricsPlugin [Micrometer bridge instrumenta
 Based on:
 [ActiveMQ Artemis opentelemetry Plugin Example](https://github.com/apache/activemq-artemis/tree/main/examples/features/standard/opentelemetry) and [Artemis Prometheus Metrics Plugin](https://github.com/rh-messaging/artemis-prometheus-metrics-plugin)
 
-
+```
 <metrics>
    <jvm-memory>true</jvm-memory> <!-- defaults to true -->
    <jvm-gc>true</jvm-gc> <!-- defaults to false -->
@@ -18,3 +18,4 @@ Based on:
    <uptime>true</uptime> <!-- defaults to false -->
    <plugin class-name="me.andidroid.artemis.opentelemetry.OpenTelemetryMetricsPlugin"/>
 </metrics>
+```
