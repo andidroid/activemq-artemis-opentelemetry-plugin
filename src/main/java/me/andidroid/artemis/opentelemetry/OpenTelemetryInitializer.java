@@ -127,6 +127,11 @@ public class OpenTelemetryInitializer {
                                         .setPropagators(ContextPropagators
                                                         .create(W3CTraceContextPropagator.getInstance()))
                                         .buildAndRegisterGlobal();
+                                        .build();
+                        GlobalOpenTelemetry.set(openTelemetry);
+
+                    // add runtime hook to close opentelemetry sdk (flushes logs)
+                    Runtime.getRuntime().addShutdownHook(new Thread(openTelemetry::close));
 
                 } catch (Throwable t) {
                         t.printStackTrace();
