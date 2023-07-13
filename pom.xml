@@ -12,7 +12,7 @@
 
 	<properties>
 		<artemis.version>2.29.0</artemis.version>
-		<opentelemetry.version>1.27.0</opentelemetry.version>
+		<opentelemetry.version>1.28.0-alpha</opentelemetry.version>
 		<netty.version>4.1.93.Final</netty.version>
 		<netty.tcnative.version>2.0.61.Final</netty.tcnative.version>
 		<keycloak.version>21.1.2</keycloak.version>
@@ -39,7 +39,7 @@
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-bom-alpha</artifactId>
-				<version>${opentelemetry.version}-alpha</version>
+				<version>${opentelemetry.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-netty-4.1</artifactId>
-			<version>${opentelemetry.version}-alpha</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
@@ -169,22 +169,22 @@
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-runtime-telemetry-java17</artifactId>
-			<version>${opentelemetry.version}-alpha</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-log4j-appender-2.17</artifactId>
-			<version>${opentelemetry.version}-alpha</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-micrometer-1.5</artifactId>
-			<version>${opentelemetry.version}-alpha</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-jmx-metrics</artifactId>
-			<version>${opentelemetry.version}-alpha</version>
+			<version>${opentelemetry.version}</version>
 		</dependency>
 
 
