@@ -20,6 +20,8 @@ import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
 import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
+import io.opentelemetry.instrumentation.netty.v4_1.NettyClientTelemetry;
+import io.opentelemetry.instrumentation.netty.v4_1.NettyServerTelemetry;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
@@ -127,6 +129,9 @@ public class OpenTelemetryInitializer {
                                         .setPropagators(ContextPropagators
                                                         .create(W3CTraceContextPropagator.getInstance()))
                                         .buildAndRegisterGlobal();
+
+                        NettyServerTelemetry.builder(openTelemetry).build().createCombinedHandler();
+                        NettyClientTelemetry.builder(openTelemetry).build().createCombinedHandler();
 
                 } catch (Throwable t) {
                         t.printStackTrace();
