@@ -17,7 +17,7 @@
 		<netty.version>4.1.95.Final</netty.version>
 		<netty.tcnative.version>2.0.61.Final</netty.tcnative.version>
 		<netty.jni-util.version>0.0.9.Final</netty.jni-util.version>
-		<keycloak.version>22.0.1</keycloak.version>
+		<keycloak.version>22.0.2</keycloak.version>
 		<jboss-logging.version>3.5.3.Final</jboss-logging.version>
 		<httpclient.version>4.5.14</httpclient.version>
 		<log4j.version>2.20.0</log4j.version>
