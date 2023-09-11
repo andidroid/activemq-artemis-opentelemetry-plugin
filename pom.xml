@@ -14,7 +14,8 @@
 		<artemis.version>2.30.0</artemis.version>
 		<opentelemetry.version>1.29.0</opentelemetry.version>
 		<opentelemetry-alpha.version>${opentelemetry.version}-alpha</opentelemetry-alpha.version>
-		<netty.version>4.1.95.Final</netty.version>
+		<grpc.version>1.57.2</grpc.version>
+		<netty.version>4.1.94.Final</netty.version>
 		<netty.tcnative.version>2.0.61.Final</netty.tcnative.version>
 		<keycloak.version>22.0.1</keycloak.version>
 		<jboss-logging.version>3.5.3.Final</jboss-logging.version>
@@ -49,6 +50,27 @@
 
 			<dependency>
 				<groupId>io.netty</groupId>
+				<artifactId>netty-bom</artifactId>
+				<version>${netty.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-bom</artifactId>
+				<version>${grpc.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec-http2</artifactId>
+				<version>${netty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
 				<artifactId>netty-tcnative</artifactId>
 				<version>${netty.tcnative.version}</version>
 			</dependency>
@@ -68,11 +90,11 @@
 				<version>${netty.tcnative.version}</version>
 				<classifier>windows-x86_64</classifier>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-handler</artifactId>
 				<version>${netty.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-adapter-core</artifactId>
@@ -115,13 +137,19 @@
 			<artifactId>artemis-server</artifactId>
 			<version>${artemis.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>artemis-amqp-protocol</artifactId>
 			<version>${artemis.version}</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-api</artifactId>
@@ -149,7 +177,48 @@
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-otlp</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>io.opentelemetry</groupId>
+					<artifactId>opentelemetry-exporter-sender-okhttp</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-sender-jdk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-sender-grpc-managed-channel</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.errorprone</groupId>
+					<artifactId>error_prone_annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>${grpc.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>${grpc.version}</version>
+		</dependency>
+		<!--
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-jaeger</artifactId>
@@ -158,6 +227,7 @@
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-zipkin</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-sdk-testing</artifactId>
@@ -190,12 +260,28 @@
 			<version>${opentelemetry-alpha.version}</version>
 		</dependency>
 		<dependency>
+         <groupId>io.micrometer</groupId>
+         <artifactId>micrometer-core</artifactId>
+		 <version>1.9.5</version>
+		 <scope>provided</scope>
+      </dependency>
+		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-jmx-metrics</artifactId>
 			<version>${opentelemetry-alpha.version}</version>
 		</dependency>
 
 
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-codec-http2</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 <!-- dependencies for Netty OPENSSL -->
 		<dependency>
 			<groupId>io.netty</groupId>

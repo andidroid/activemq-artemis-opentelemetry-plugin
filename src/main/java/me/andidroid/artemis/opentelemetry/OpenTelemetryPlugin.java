@@ -8,7 +8,6 @@ import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.OpenTelemetrySdk;
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.Message;
 import org.apache.activemq.artemis.core.postoffice.RoutingStatus;
@@ -35,8 +34,6 @@ public class OpenTelemetryPlugin implements ActiveMQServerPlugin {
 
    private final AtomicReference<ActiveMQServer> server = new AtomicReference<>();
 
-
-   
    @Override
    public void init(Map<String, String> properties) {
       logger.info("start OpenTelemetryPlugin");
@@ -45,8 +42,8 @@ public class OpenTelemetryPlugin implements ActiveMQServerPlugin {
       openTelemetry = OpenTelemetryInitializer.create(properties).getOpenTelemetry();
       tracer = openTelemetry.getTracer(OpenTelemetryPlugin.class.getName());
 
-      //initialize Log4j Appender
-      OpenTelemetryAppender.install((OpenTelemetrySdk)openTelemetry);
+      // initialize Log4j Appender
+      OpenTelemetryAppender.install(openTelemetry);
    }
 
    @Override
