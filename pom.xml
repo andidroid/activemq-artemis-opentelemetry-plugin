@@ -16,6 +16,7 @@
 		<opentelemetry-alpha.version>${opentelemetry.version}-alpha</opentelemetry-alpha.version>
 		<netty.version>4.1.95.Final</netty.version>
 		<netty.tcnative.version>2.0.61.Final</netty.tcnative.version>
+		<netty.jni-util.version>0.0.9.Final</netty.jni-util.version>
 		<keycloak.version>22.0.1</keycloak.version>
 		<jboss-logging.version>3.5.3.Final</jboss-logging.version>
 		<httpclient.version>4.5.14</httpclient.version>
@@ -72,6 +73,12 @@
 				<groupId>io.netty</groupId>
 				<artifactId>netty-handler</artifactId>
 				<version>${netty.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.netty/netty-jni-util -->
+			<dependency>
+			    <groupId>io.netty</groupId>
+			    <artifactId>netty-jni-util</artifactId>
+			    <version>${netty.jni-util.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.keycloak</groupId>
@@ -213,6 +220,11 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-tcnative-boringssl-static</artifactId>
 			<classifier>windows-x86_64</classifier>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.netty/netty-jni-util -->
+		<dependency>
+		    <groupId>io.netty</groupId>
+		    <artifactId>netty-jni-util</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
