@@ -44,12 +44,25 @@
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-bom-alpha</artifactId>
-				
 				<version>${opentelemetry-alpha.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>io.opentelemetry.instrumentation</groupId>
+				<artifactId>opentelemetry-instrumentation-bom</artifactId>
+				<version>${opentelemetry-instrumentation.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.opentelemetry.instrumentation</groupId>
+				<artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
+				<version>${opentelemetry-instrumentation-alpha.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
 			<dependency>
 				<groupId>io.netty</groupId>
 				<artifactId>netty-tcnative</artifactId>
@@ -176,32 +189,26 @@
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-netty-4.1</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-runtime-metrics</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency> -->
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-runtime-telemetry-java17</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-log4j-appender-2.17</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-micrometer-1.5</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
 			<artifactId>opentelemetry-jmx-metrics</artifactId>
-			<version>${opentelemetry-instrumentation-alpha.version}</version>
 		</dependency>
 
 
