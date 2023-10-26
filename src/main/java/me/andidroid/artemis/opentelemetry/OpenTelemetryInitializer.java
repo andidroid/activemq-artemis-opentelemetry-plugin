@@ -34,7 +34,7 @@ import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
-import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
+import io.opentelemetry.semconv.ResourceAttributes;
 
 public class OpenTelemetryInitializer {
 
@@ -129,11 +129,11 @@ public class OpenTelemetryInitializer {
                                         .setPropagators(ContextPropagators
                                                         .create(W3CTraceContextPropagator.getInstance()))
                                         .buildAndRegisterGlobal();
-//                                        .build();
-//                        GlobalOpenTelemetry.set(openTelemetry);
+                        // .build();
+                        // GlobalOpenTelemetry.set(openTelemetry);
 
-                    // add runtime hook to close opentelemetry sdk (flushes logs)
-                    Runtime.getRuntime().addShutdownHook(new Thread(openTelemetry::close));
+                        // add runtime hook to close opentelemetry sdk (flushes logs)
+                        Runtime.getRuntime().addShutdownHook(new Thread(openTelemetry::close));
 
                         NettyServerTelemetry.builder(openTelemetry).build().createCombinedHandler();
                         NettyClientTelemetry.builder(openTelemetry).build().createCombinedHandler();
