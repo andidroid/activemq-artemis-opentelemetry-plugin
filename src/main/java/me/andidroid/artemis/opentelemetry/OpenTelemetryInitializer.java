@@ -25,6 +25,7 @@ import io.opentelemetry.instrumentation.netty.v4_1.NettyServerTelemetry;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
 import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import io.opentelemetry.sdk.logs.LogRecordProcessor;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
@@ -35,6 +36,7 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.semconv.ResourceAttributes;
+import me.andidroid.artemis.opentelemetry.client.common.MessageTextMapPropagator;
 
 public class OpenTelemetryInitializer {
 
@@ -67,68 +69,82 @@ public class OpenTelemetryInitializer {
                                 throw new NullPointerException("Unable to find tracing.properties file");
                         }
                         Properties prop = new Properties(System.getProperties());
+                        // load defaults
                         prop.load(input);
+                        // overwrite with plugin properties
                         prop.putAll(properties);
                         logger.info(prop.toString());
                         System.setProperties(prop);
 
-                        String otelEndpoint = Objects
-                                        .toString(prop.getOrDefault("otel.exporter.otlp.endpoint",
-                                                        "http://localhost:4317"));
+                        if ("true".equals(properties.get("otel.autoconfigure.enabled"))) {
+                                openTelemetry = AutoConfiguredOpenTelemetrySdk.builder()
+                                                .setResultAsGlobal().build().getOpenTelemetrySdk();
+                        } else {
 
-                        String serviceName = Objects
-                                        .toString(prop.getOrDefault("otel.service.name", "activemq-artemis"));
+                                String otelEndpoint = Objects
+                                                .toString(prop.getOrDefault("otel.exporter.otlp.endpoint",
+                                                                "http://localhost:4317"));
 
-                        Resource resource = Resource.getDefault()
-                                        .merge(Resource.create(
-                                                        Attributes.of(ResourceAttributes.SERVICE_NAME, serviceName)));
+                                String serviceName = Objects
+                                                .toString(prop.getOrDefault("otel.service.name", "activemq-artemis"));
 
-                        /*
-                         * Tracing
-                         */
+                                Resource resource = Resource.getDefault()
+                                                .merge(Resource.create(
+                                                                Attributes.of(ResourceAttributes.SERVICE_NAME,
+                                                                                serviceName)));
 
-                        SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
-                                        .addSpanProcessor(BatchSpanProcessor
-                                                        .builder(OtlpGrpcSpanExporter.builder().build()).build())
-                                        .setResource(resource)
-                                        .build();
+                                /*
+                                 * Tracing
+                                 */
 
-                        /*
-                         * Metrics
-                         */
-                        SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
-                                        .registerMetricReader(
-                                                        PeriodicMetricReader.builder(
-                                                                        OtlpGrpcMetricExporter.builder().build())
-                                                                        .build())
-                                        .setResource(resource)
-                                        .build();
-                        /*
-                         * Logging
-                         */
-                        LogRecordExporter logRecordExporter = OtlpGrpcLogRecordExporter.builder()
-                                        .setEndpoint(otelEndpoint)
-                                        .build();
-                        // use syso-log-exporter for testing
-                        // logRecordExporter = SystemOutLogRecordExporter.create();
-                        LogRecordProcessor logRecordProcessor = BatchLogRecordProcessor.builder(logRecordExporter)
-                                        .build();
-                        // LogRecordExporter logRecordExporter =
-                        // BatchLogRecordProcessor.builder(OtlpJsonLoggingLogRecordExporter.create());
-                        // LogRecordExporter logRecordExporter = InMemoryLogRecordExporter.create();
-                        // SimpleLogRecordProcessor.create(logRecordExporter)
-                        SdkLoggerProvider sdkLoggerProvider = SdkLoggerProvider.builder()
-                                        .setResource(resource)
-                                        .addLogRecordProcessor(logRecordProcessor)
-                                        .build();
+                                SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
+                                                .addSpanProcessor(BatchSpanProcessor
+                                                                .builder(OtlpGrpcSpanExporter.builder().build())
+                                                                .build())
+                                                .setResource(resource)
+                                                .build();
 
-                        openTelemetry = OpenTelemetrySdk.builder()
-                                        .setTracerProvider(sdkTracerProvider)
-                                        .setMeterProvider(sdkMeterProvider)
-                                        .setLoggerProvider(sdkLoggerProvider)
-                                        .setPropagators(ContextPropagators
-                                                        .create(W3CTraceContextPropagator.getInstance()))
-                                        .buildAndRegisterGlobal();
+                                /*
+                                 * Metrics
+                                 */
+                                SdkMeterProvider sdkMeterProvider = SdkMeterProvider.builder()
+                                                .registerMetricReader(
+                                                                PeriodicMetricReader.builder(
+                                                                                OtlpGrpcMetricExporter.builder()
+                                                                                                .build())
+                                                                                .build())
+                                                .setResource(resource)
+                                                .build();
+                                /*
+                                 * Logging
+                                 */
+                                LogRecordExporter logRecordExporter = OtlpGrpcLogRecordExporter.builder()
+                                                .setEndpoint(otelEndpoint)
+                                                .build();
+                                // use syso-log-exporter for testing
+                                // logRecordExporter = SystemOutLogRecordExporter.create();
+                                LogRecordProcessor logRecordProcessor = BatchLogRecordProcessor
+                                                .builder(logRecordExporter)
+                                                .build();
+                                // LogRecordExporter logRecordExporter =
+                                // BatchLogRecordProcessor.builder(OtlpJsonLoggingLogRecordExporter.create());
+                                // LogRecordExporter logRecordExporter = InMemoryLogRecordExporter.create();
+                                // SimpleLogRecordProcessor.create(logRecordExporter)
+                                SdkLoggerProvider sdkLoggerProvider = SdkLoggerProvider.builder()
+                                                .setResource(resource)
+                                                .addLogRecordProcessor(logRecordProcessor)
+                                                .build();
+
+                                openTelemetry = OpenTelemetrySdk.builder()
+                                                .setTracerProvider(sdkTracerProvider)
+                                                .setMeterProvider(sdkMeterProvider)
+                                                .setLoggerProvider(sdkLoggerProvider)
+                                                .setPropagators(ContextPropagators
+                                                                .create(new MessageTextMapPropagator()))
+                                                // .setPropagators(ContextPropagators
+                                                // .create(W3CTraceContextPropagator.getInstance()))
+                                                .buildAndRegisterGlobal();
+                        }
                         // .build();
                         // GlobalOpenTelemetry.set(openTelemetry);
 
