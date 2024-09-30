@@ -22,7 +22,7 @@
 		<keycloak.version>25.0.3</keycloak.version>
 		<jboss-logging.version>3.6.0.Final</jboss-logging.version>
 		<httpclient.version>4.5.14</httpclient.version>
-		<log4j.version>2.23.1</log4j.version>
+		<log4j.version>2.24.1</log4j.version>
 	</properties>
 
 	<repositories>
