@@ -16,7 +16,7 @@
 		<opentelemetry-alpha.version>${opentelemetry.version}-alpha</opentelemetry-alpha.version>
 		<opentelemetry-instrumentation.version>2.8.0</opentelemetry-instrumentation.version>
 		<opentelemetry-instrumentation-alpha.version>${opentelemetry-instrumentation.version}-alpha</opentelemetry-instrumentation-alpha.version>
-		<netty.version>4.1.112.Final</netty.version>
+		<netty.version>4.1.114.Final</netty.version>
 		<netty.tcnative.version>2.0.66.Final</netty.tcnative.version>
 		<netty.jni-util.version>0.0.9.Final</netty.jni-util.version>
 		<keycloak.version>25.0.3</keycloak.version>
