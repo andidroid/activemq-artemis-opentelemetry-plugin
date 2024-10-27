@@ -399,4 +399,32 @@ public class OpenTelemetryPlugin implements ActiveMQServerPlugin {
          // }
       }
    }
+
+   @Override
+   public void messageMoved(Transaction tx, MessageReference ref, AckReason reason, SimpleString destAddress,
+         Long destQueueID, ServerConsumer consumer, Message newMessage, RoutingStatus result) throws ActiveMQException {
+      Message message = (ref == null ? null : ref.getMessage());
+      Instrumenter<Message, Message> instrumenter = getInstrumenter(message, OPERATION_NAME_ROUTE);
+      Context context = getContext(message, OPERATION_NAME_ROUTE);
+      Span.fromContext(context).addEvent("messageMoved");
+      Scope scope = context.makeCurrent();
+      instrumenter.end(context, message, message, null);
+      if (scope != null) {
+         scope.close();
+      }
+   }
+
+   @Override
+   public void messageExpired(MessageReference ref, SimpleString messageExpiryAddress, ServerConsumer consumer)
+         throws ActiveMQException {
+      Message message = (ref == null ? null : ref.getMessage());
+      Instrumenter<Message, Message> instrumenter = getInstrumenter(message, OPERATION_NAME_ROUTE);
+      Context context = getContext(message, OPERATION_NAME_ROUTE);
+      Span.fromContext(context).addEvent("messageMoved");
+      Scope scope = context.makeCurrent();
+      instrumenter.end(context, message, message, null);
+      if (scope != null) {
+         scope.close();
+      }
+   }
 }

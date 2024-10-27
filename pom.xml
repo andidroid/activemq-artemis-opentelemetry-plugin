@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>me.andidroid</groupId>
 		<artifactId>test</artifactId>
-		<version>1.0.5</version>
+		<version>1.0.9</version>
 	</parent>
 
 	<artifactId>activemq-artemis-opentelemetry-plugin</artifactId>
