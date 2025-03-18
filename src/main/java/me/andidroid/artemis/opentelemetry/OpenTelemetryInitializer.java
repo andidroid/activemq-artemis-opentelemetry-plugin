@@ -35,7 +35,7 @@ import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
-import io.opentelemetry.semconv.ResourceAttributes;
+import io.opentelemetry.semconv.incubating.ServiceIncubatingAttributes;
 import me.andidroid.artemis.opentelemetry.client.common.MessageTextMapPropagator;
 
 public class OpenTelemetryInitializer {
@@ -90,7 +90,7 @@ public class OpenTelemetryInitializer {
 
                                 Resource resource = Resource.getDefault()
                                                 .merge(Resource.create(
-                                                                Attributes.of(ResourceAttributes.SERVICE_NAME,
+                                                                Attributes.of(ServiceIncubatingAttributes.SERVICE_NAME,
                                                                                 serviceName)));
 
                                 /*
