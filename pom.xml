@@ -14,7 +14,7 @@
 		<artemis.version>2.42.0</artemis.version>
 		<opentelemetry.version>1.52.0</opentelemetry.version>
 		<opentelemetry-alpha.version>${opentelemetry.version}-alpha</opentelemetry-alpha.version>
-		<opentelemetry-instrumentation.version>2.18.1</opentelemetry-instrumentation.version>
+		<opentelemetry-instrumentation.version>2.19.0</opentelemetry-instrumentation.version>
 		<opentelemetry-instrumentation-alpha.version>${opentelemetry-instrumentation.version}-alpha</opentelemetry-instrumentation-alpha.version>
 		<netty.version>4.1.121.Final</netty.version>
 		<netty.tcnative.version>2.0.72.Final</netty.tcnative.version>
