@@ -14,7 +14,7 @@
 		<artemis.version>2.54.0</artemis.version>
 		<opentelemetry.version>1.62.0</opentelemetry.version>
 		<opentelemetry-alpha.version>${opentelemetry.version}-alpha</opentelemetry-alpha.version>
-		<opentelemetry-instrumentation.version>2.27.0</opentelemetry-instrumentation.version>
+		<opentelemetry-instrumentation.version>2.28.1</opentelemetry-instrumentation.version>
 		<opentelemetry-instrumentation-alpha.version>${opentelemetry-instrumentation.version}-alpha</opentelemetry-instrumentation-alpha.version>
 		<netty.version>4.1.128.Final</netty.version>
 		<netty.tcnative.version>2.0.77.Final</netty.tcnative.version>
@@ -192,7 +192,7 @@
 		</dependency> -->
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>
-			<artifactId>opentelemetry-runtime-telemetry-java17</artifactId>
+			<artifactId>opentelemetry-runtime-telemetry</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.opentelemetry.instrumentation</groupId>

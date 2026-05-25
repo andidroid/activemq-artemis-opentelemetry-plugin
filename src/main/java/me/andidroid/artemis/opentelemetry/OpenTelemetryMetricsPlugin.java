@@ -22,8 +22,9 @@ import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
-import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
-import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
+import io.opentelemetry.instrumentation.runtimetelemetry.RuntimeTelemetry;
+//import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
+//import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
 
 import org.apache.activemq.artemis.core.server.metrics.ActiveMQMetricsPlugin;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -49,7 +50,10 @@ public class OpenTelemetryMetricsPlugin implements ActiveMQMetricsPlugin {
          openTelemetry = GlobalOpenTelemetry.get();// OpenTelemetryInitializer.getINSTANCE().getOpenTelemetry();
 
          try {
-
+            //configuration: https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/runtime-telemetry/library
+            RuntimeTelemetry runtimeTelemetry = RuntimeTelemetry.create(openTelemetry);
+            /*
+            old version:
             RuntimeMetrics runtimeMetrics = RuntimeMetrics.builder(openTelemetry)
                   .enableFeature(JfrFeature.BUFFER_METRICS)
                   .enableFeature(JfrFeature.CLASS_LOAD_METRICS)
@@ -63,6 +67,7 @@ public class OpenTelemetryMetricsPlugin implements ActiveMQMetricsPlugin {
                   .enableFeature(JfrFeature.NETWORK_IO_METRICS)
                   .enableFeature(JfrFeature.THREAD_METRICS)
                   .build();
+            */
             // stop on shutdown
             // runtimeMetrics.close();
 

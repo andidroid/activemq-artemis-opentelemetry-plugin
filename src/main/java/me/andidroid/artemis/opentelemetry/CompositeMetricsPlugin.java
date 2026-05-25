@@ -23,9 +23,6 @@ import java.util.Map;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
-import io.opentelemetry.instrumentation.runtimemetrics.java17.JfrFeature;
-import io.opentelemetry.instrumentation.runtimemetrics.java17.RuntimeMetrics;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.apache.activemq.artemis.core.server.metrics.ActiveMQMetricsPlugin;
