@@ -34,7 +34,7 @@ public class AutoScaleBridgeSynchronizerPlugin implements ActiveMQServerPlugin {
                     .setName("bridge-to-cloud-node-" + queueName)
                     .setQueueName(queueName)
                     .setForwardingAddress("global.cluster.forwarder")
-                    .setTransformerClassName("de.example.artemis.transformer.CloudScaleTransformer")
+                    .setTransformerClassName("me.andidroid.artemis.transformer.CloudScaleTransformer")
                     .setStaticConnectors(java.util.List.of("remote-cloud-connector"));
 
                 // Deploye die Brücke live im laufenden Betrieb (O(1) Aktivierung ohne Neustart)
